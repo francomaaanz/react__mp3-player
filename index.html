@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,800">
+  </head>
+  <body>
+    <div id="container">
+      <div id="hook"></div>
+      <h1>Play Music</h1>
+      <input type="file" id="files" name="files[]" multiple />
+    </div>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://soulwire.github.io/sketch.js/js/sketch.min.js"></script>
+    <script src="app.js"></script>
+    <script type="text/babel">
+
+      class Container extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { isMusicPlaying : false };
+          this.handleClick = this.handleClick.bind(this);
+        }
+
+        handleClick(){
+          console.log('funciona el click')
+          //la mejor forma de hacer el setState
+          //hay que darle una funcion, no un objeto. Pero si devolver un nuevo objeto 
+          //el cual tiene un nuevo estado
+          console.log(this.audio);
+          if (this.state.isMusicPlaying) {
+            this.audio.pause();
+          } else {
+            this.audio.play();
+          }
+          this.setState(prevState => {
+            return {
+              isMusicPlaying: !prevState.isMusicPlaying
+            }
+          });
+
+        }
+
+        render() {
+          let status = this.state.isMusicPlaying ? 'Playing'  : 'Not Playing'
+          return (
+            <div>
+              <h1 onClick={this.handleClick.bind(this)}>{ status }</h1>
+              <PlayButton 
+                  isMusicPlaying={this.state.isMusicPlaying} 
+                  onClickEvent={this.handleClick.bind(this)}
+              />
+              <audio id="audio" ref={(audioTag) => { this.audio = audioTag }}/>
+            </div>
+          );
+        }
+      }
+
+    class PlayButton extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+
+      render(){
+        const className = this.props.isMusicPlaying ? 'play active' : 'play';
+        return (
+          <div>
+            <a className={className} title="Play Video" onClick={this.props.onClickEvent}></a> 
+          </div> 
+        )
+      }
+    }
+
+      const placeWeWantToPutComponent = document.getElementById('hook');
+      ReactDOM.render(<Container />, placeWeWantToPutComponent);
+  </script>
+  </body>
+</html>
